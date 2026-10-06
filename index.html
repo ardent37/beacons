@@ -31,7 +31,14 @@
   <link rel="preload" as="image" href="img/cupon.webp" fetchpriority="high">
 
   <link rel="stylesheet" href="css/styles.css">
-  <script>document.documentElement.classList.add('js')</script>
+  <script>
+    document.documentElement.classList.add('js');
+    // Navegador interno de TikTok: muestra el aviso "Abre desde el navegador".
+    // Para probarlo en un ordenador, añade ?tiktok a la URL.
+    if (/musical_ly|bytedancewebview|tiktok|trill_/i.test(navigator.userAgent) || /[?&]tiktok/.test(location.search)) {
+      document.documentElement.classList.add('in-tiktok');
+    }
+  </script>
 </head>
 <body>
   <main class="page" id="page">
@@ -66,6 +73,23 @@
         </nav>
       </div>
     </header>
+
+    <!-- ── Aviso: solo se ve dentro del navegador de TikTok ─ -->
+    <section class="inapp" aria-labelledby="inapp-title">
+      <svg class="inapp__lock" viewBox="0 0 48 64" aria-hidden="true"><path d="M10 26V17a14 14 0 0 1 28 0v9h-6v-9a8 8 0 0 0-16 0v9z"/><path fill-rule="evenodd" d="M4 26h40a2 2 0 0 1 2 2v32a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V28a2 2 0 0 1 2-2zm20 13a5 5 0 0 0-2.5 9.33V54a2.5 2.5 0 0 0 5 0v-5.67A5 5 0 0 0 24 39z"/></svg>
+      <h2 class="inapp__title" id="inapp-title">Abre desde el navegador</h2>
+      <ol class="inapp__steps">
+        <li><span class="inapp__num" aria-hidden="true">1</span><span>Haz clic en <span class="inapp__dots" role="img" aria-label="los tres puntos"><i></i><i></i><i></i></span> en la esquina superior derecha</span></li>
+        <li><span class="inapp__num" aria-hidden="true">2</span><span>Luego <strong>“Abrir en el navegador”</strong></span></li>
+      </ol>
+    </section>
+
+    <!-- Flechas animadas que señalan el menú ··· de TikTok -->
+    <svg class="inapp-arrows" viewBox="0 0 56 160" aria-hidden="true">
+      <path class="inapp-arrows__a1" d="M28 0 56 54Q28 42 0 54Z"/>
+      <path class="inapp-arrows__a2" d="M28 53 56 107Q28 95 0 107Z"/>
+      <path class="inapp-arrows__a3" d="M28 106 56 160Q28 148 0 160Z"/>
+    </svg>
 
     <!-- ── Cupón principal (abre la ventana de registro) ──── -->
     <a class="promo" id="promo"
