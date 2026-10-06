@@ -101,7 +101,7 @@ function json(body, status = 200) {
     headers: {
       ...CORS,
       'Content-Type': 'application/json; charset=utf-8',
-      'Cache-Control': 'public, max-age=30',
+      'Cache-Control': 'private, max-age=30', // incluye el país de cada visitante
     },
   });
 }
@@ -110,16 +110,22 @@ export default {
   async fetch(request) {
     if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: CORS });
 
-    if (memo && Date.now() - memo.at < CACHE_MS) return json(memo.data);
+    // País del visitante (código ISO, p. ej. "ES"), lo pone Cloudflare gratis
+    const country = request.cf?.country || null;
+
+    // /country → solo el país (rápido, lo usa la página /chats/)
+    if (new URL(request.url).pathname.replace(/\/+$/, '') === '/country') return json({ country });
+
+    if (memo && Date.now() - memo.at < CACHE_MS) return json({ ...memo.data, country });
 
     try {
       inflight ??= getFollowers(memo?.data).finally(() => { inflight = null; });
       const data = await inflight;
       memo = { data, at: Date.now() };
-      return json(data);
+      return json({ ...data, country });
     } catch (err) {
-      if (memo) return json(memo.data); // mejor un dato de hace un rato que nada
-      return json({ error: String(err.message || err) }, 502);
+      if (memo) return json({ ...memo.data, country }); // mejor un dato de hace un rato que nada
+      return json({ error: String(err.message || err), country }, 502);
     }
   },
 };

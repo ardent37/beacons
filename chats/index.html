@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex">
+  <meta name="color-scheme" content="light dark">
+  <title>Salty · Chats</title>
+  <link rel="icon" type="image/png" href="../img/favicon.png">
+  <style>
+    :root { --bg: #fff; --ink: #111; --muted: #888; color-scheme: light dark; }
+    @media (prefers-color-scheme: dark) { :root { --bg: #2e2d2d; --ink: #fff; --muted: #bbb; } }
+    html, body { height: 100%; margin: 0; }
+    body {
+      display: grid;
+      place-items: center;
+      background: var(--bg);
+      color: var(--ink);
+      font: 16px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      text-align: center;
+    }
+    .spin {
+      width: 34px; height: 34px; margin: 0 auto 14px;
+      border-radius: 50%;
+      border: 3px solid rgb(252 117 20 / 0.2);
+      border-top-color: #fc7514;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    p { margin: 0; color: var(--muted); }
+    a { color: #fc7514; }
+  </style>
+</head>
+<body>
+  <div>
+    <div class="spin" aria-hidden="true"></div>
+    <p id="msg">Abriendo…</p>
+    <noscript><p><a href="https://t.me/addlist/Epf3JZL3YQ4yN2Q0">Pulsa aquí para continuar</a></p></noscript>
+  </div>
+
+  <script>
+    // España y Latinoamérica → un enlace; resto del mundo → otro.
+    var LINKS = {
+      hispano: 'https://t.me/addlist/Epf3JZL3YQ4yN2Q0',   // ES, MX, AR, PE, EC, CO
+      resto:   'https://t.me/addlist/YAN-SroiRYVlNWVh',   // cualquier otro país
+    };
+    var HISPANO = ['ES', 'MX', 'AR', 'PE', 'EC', 'CO'];
+    var COUNTRY_API = 'https://salty-followers.ardentcone.workers.dev/country';
+
+    // Si el Worker no responde, se adivina por la zona horaria del móvil
+    var HISPANO_TZ = /^(Europe\/Madrid|Atlantic\/Canary|Africa\/Ceuta|America\/(Mexico_City|Cancun|Merida|Monterrey|Matamoros|Chihuahua|Ciudad_Juarez|Ojinaga|Mazatlan|Bahia_Banderas|Hermosillo|Tijuana|Argentina\/.+|Buenos_Aires|Cordoba|Lima|Guayaquil|Bogota)|Pacific\/Galapagos)$/;
+
+    var done = false;
+    function go(country) {
+      if (done) return;
+      done = true;
+      var hispano;
+      if (country) {
+        hispano = HISPANO.indexOf(String(country).toUpperCase()) !== -1;
+      } else {
+        try { hispano = HISPANO_TZ.test(Intl.DateTimeFormat().resolvedOptions().timeZone); }
+        catch (e) { hispano = true; }
+      }
+      var url = hispano ? LINKS.hispano : LINKS.resto;
+      document.getElementById('msg').innerHTML =
+        'Abriendo… <br><a href="' + url + '">Pulsa aquí si no se abre</a>';
+      location.replace(url);
+    }
+
+    setTimeout(function () { go(null); }, 2500); // nunca esperar más de 2,5 s
+    fetch(COUNTRY_API, { cache: 'no-store' })
+      .then(function (r) { return r.json(); })
+      .then(function (d) { go(d && d.country); })
+      .catch(function () { go(null); });
+  </script>
+</body>
+</html>
