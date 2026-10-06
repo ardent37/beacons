@@ -19,6 +19,9 @@
   --ink: #111111;
   --muted: #929292;
   --bg: #ffffff;
+  --social: var(--orange);      /* iconos TikTok / Instagram / YouTube */
+  --yt-play: #ffffff;           /* triángulo del icono de YouTube */
+  --avatar-ring: rgb(0 0 0 / 0.06);
 
   /* Superficie y forma */
   --radius: 14px;
@@ -26,12 +29,28 @@
   --gutter: clamp(16px, 5.5vw, 28px);
   --shadow: 0 1px 2px rgb(0 0 0 / 0.04), 0 10px 28px -14px rgb(0 0 0 / 0.28);
   --shadow-hover: 0 2px 4px rgb(0 0 0 / 0.05), 0 18px 36px -16px rgb(0 0 0 / 0.32);
+  --social-hover: rgb(252 117 20 / 0.08);
 
   /* Movimiento */
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-sheet: cubic-bezier(0.32, 0.72, 0, 1); /* curva de las hojas de iOS */
 
   --font: "Agrandir", "Outfit", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Tema oscuro: se activa solo si el móvil/ordenador del usuario está en modo oscuro */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #2e2d2d;
+    --ink: #ffffff;
+    --muted: #c9c9c9;
+    --social: #f2f2f2;
+    --yt-play: #2e2d2d;
+    --avatar-ring: rgb(255 255 255 / 0.1);
+    --social-hover: rgb(255 255 255 / 0.08);
+    --shadow: 0 1px 2px rgb(0 0 0 / 0.2), 0 12px 30px -14px rgb(0 0 0 / 0.6);
+    --shadow-hover: 0 2px 4px rgb(0 0 0 / 0.25), 0 20px 38px -16px rgb(0 0 0 / 0.7);
+  }
 }
 
 *,
@@ -97,7 +116,7 @@ a { color: inherit; text-decoration: none; }
   height: auto;
   aspect-ratio: 1;
   border-radius: 50%;
-  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.06);
+  box-shadow: 0 0 0 1px var(--avatar-ring);
 }
 
 .profile__info {
@@ -144,7 +163,7 @@ a { color: inherit; text-decoration: none; }
   align-items: center;
   gap: 4px;
   margin-left: -8px; /* compensa el área táctil para alinear con el texto */
-  color: var(--orange);
+  color: var(--social);
 }
 
 /* Área táctil de 44px aunque el icono sea más pequeño */
@@ -165,10 +184,11 @@ a { color: inherit; text-decoration: none; }
 }
 
 .profile__social svg[fill="none"] { fill: none; } /* iconos de contorno (Instagram) */
-.profile__social a:last-child svg { width: 36px; }
+.profile__social a:last-child svg { width: 30px; }
+.profile__social .yt-play { fill: var(--yt-play); }
 
 @media (hover: hover) {
-  .profile__social a:hover { background: rgb(252 117 20 / 0.08); }
+  .profile__social a:hover { background: var(--social-hover); }
 }
 .profile__social a:active { transform: scale(0.9); }
 
