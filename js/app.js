@@ -12,6 +12,21 @@ const CONFIG = {
 };
 
 const root = document.documentElement;
+
+// Estadísticas (Umami). Se carga en paralelo para no frenar la web; los eventos
+// que lleguen antes se guardan y se envían al cargar. Si un bloqueador lo
+// impide, no pasa nada.
+const trackQueue = [];
+function track(name, data) {
+  if (typeof window.umami?.track === 'function') {
+    try { window.umami.track(name, data); } catch {}
+  } else {
+    trackQueue.push([name, data]);
+  }
+}
+document.getElementById('umami-script')?.addEventListener('load', () => {
+  for (const [name, data] of trackQueue.splice(0)) track(name, data);
+});
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
 
 /* ──────────────────────────────────────────────────────────────────────────
@@ -235,6 +250,7 @@ function initSheet() {
     clearTimeout(unlockTimer);
     lastFocus = document.activeElement;
     ensureIframe();
+    track('cupon');
 
     // La página se encoge hacia el centro de lo que se ve en pantalla
     page.style.transformOrigin = `50% ${scrollY + innerHeight / 2}px`;
@@ -356,12 +372,28 @@ function initSheet() {
 function initChats() {
   const tile = document.getElementById('tile-chats');
   if (!tile || !window.SaltyChats) return;
-  tile.href = SaltyChats.linkFor(null); // provisional: por zona horaria
+  const setLink = (country) => {
+    tile.href = SaltyChats.linkFor(country);
+    tile.dataset.grupo = tile.href === SaltyChats.linkFor('ES') ? 'hispano' : 'resto';
+  };
+  setLink(null); // provisional: por zona horaria
   SaltyChats.getCountry(4000).then((country) => {
-    if (country) tile.href = SaltyChats.linkFor(country);
+    if (country) setLink(country);
   });
 }
 
+// Clics en enlaces y redes: cualquier elemento con data-track="nombre"
+function initTracking() {
+  document.addEventListener('click', (e) => {
+    const el = e.target.closest('[data-track]');
+    if (el) track(el.dataset.track, el.dataset.grupo ? { grupo: el.dataset.grupo } : undefined);
+  }, { capture: true });
+
+  // Visitas que llegan desde el navegador de TikTok y ven el aviso
+  if (root.classList.contains('in-tiktok')) track('aviso-tiktok');
+}
+
+initTracking();
 initFollowers();
 initSheet();
 initChats();
