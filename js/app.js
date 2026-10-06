@@ -350,7 +350,8 @@ function initSheet() {
    ────────────────────────────────────────────────────────────────────────── */
 
 // El país se pide nada más cargar, así el botón ya lleva directo al grupo
-// correcto y Telegram se abre en otra pestaña sin páginas intermedias.
+// correcto, sin páginas intermedias. Se abre en la misma pestaña: el móvil
+// pasa el enlace a la app de Telegram y la web se queda tal cual detrás.
 // Si algo falla, el botón sigue apuntando a /chats/, que hace lo mismo.
 function initChats() {
   const tile = document.getElementById('tile-chats');

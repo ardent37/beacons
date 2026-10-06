@@ -39,11 +39,19 @@
 
   <script src="links.js"></script>
   <script>
+    // Cuando el móvil abre la app de Telegram, esta pestaña no cambia de página.
+    // Por eso, cuando el usuario vuelve al navegador, se le lleva a la web.
+    var home = function () { location.replace('../'); };
+    var wentAway = false;
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) wentAway = true;
+      else if (wentAway) home();
+    });
+    addEventListener('pageshow', function (e) { if (e.persisted) home(); });
+
     SaltyChats.getCountry(2500).then(function (country) {
       location.replace(SaltyChats.linkFor(country));
     });
-    // Al volver a esta pestaña (p. ej. desde la app de Telegram), mostrar la web
-    addEventListener('pageshow', function (e) { if (e.persisted) location.replace('../'); });
   </script>
 </body>
 </html>
