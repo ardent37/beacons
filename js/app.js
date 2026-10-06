@@ -6,7 +6,7 @@ const CONFIG = {
   // URL de tu Worker de Cloudflare (contador en tiempo real). Déjalo vacío
   // y la web usará data/followers.json, que GitHub actualiza cada 30 min.
   // Ejemplo: 'https://salty-followers.tu-usuario.workers.dev'
-  apiUrl: '',
+  apiUrl: 'https://salty-followers.ardentcone.workers.dev/',
   fallbackUrl: 'data/followers.json',
   refreshMs: 30_000,
 };
@@ -135,20 +135,30 @@ function createCounter(el) {
   };
 }
 
-async function fetchFollowers() {
-  const sources = [CONFIG.apiUrl, `${CONFIG.fallbackUrl}?t=${Date.now()}`].filter(Boolean);
-  for (const url of sources) {
-    try {
-      const res = await fetch(url, { cache: 'no-store' });
-      if (!res.ok) continue;
-      const data = await res.json();
-      const total = Number(data.total);
-      if (Number.isFinite(total) && total > 0) return total;
-    } catch {
-      /* probamos la siguiente fuente */
-    }
+async function getJSON(url) {
+  try {
+    const res = await fetch(url, { cache: 'no-store' });
+    return res.ok ? await res.json() : null;
+  } catch {
+    return null;
   }
-  return null;
+}
+
+// Combina red a red: si el Worker no consigue Instagram (Instagram suele
+// bloquear a Cloudflare), se usa el dato de data/followers.json para esa red.
+async function fetchFollowers() {
+  const [live, backup] = await Promise.all([
+    CONFIG.apiUrl ? getJSON(CONFIG.apiUrl) : null,
+    getJSON(`${CONFIG.fallbackUrl}?t=${Date.now()}`),
+  ]);
+  const pick = (key) => {
+    const n = Number(live?.[key] ?? backup?.[key]);
+    return Number.isFinite(n) ? n : null;
+  };
+  const tiktok = pick('tiktok');
+  const instagram = pick('instagram');
+  if (tiktok == null && instagram == null) return null;
+  return (tiktok ?? 0) + (instagram ?? 0);
 }
 
 function initFollowers() {
