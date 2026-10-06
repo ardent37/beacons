@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Salty · Mercado Chino</title>
+  <meta name="description" content="40% de descuento en tu envío y +800€ en cupones. Telegram, guía de compra, spreadsheet con +10K productos y el mejor proveedor de zapatillas.">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="color-scheme" content="light">
+
+  <!-- Vista previa al compartir el enlace (WhatsApp, Instagram, etc.).
+       CAMBIA la URL por la de tu web cuando esté publicada. -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Salty · Mercado Chino">
+  <meta property="og:description" content="40% en tu envío + 800€ en cupones">
+  <meta property="og:image" content="https://TU-USUARIO.github.io/salty/img/cupon.webp">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon" type="image/png" href="img/favicon.png">
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+
+  <!-- Conexiones anticipadas: la ventana de registro abre más rápido -->
+  <link rel="preconnect" href="https://www.usfans.com">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500&display=swap">
+
+  <!-- Imágenes que se ven nada más cargar: se piden con prioridad -->
+  <link rel="preload" as="image" href="img/avatar.webp" fetchpriority="high">
+  <link rel="preload" as="image" href="img/cupon.webp" fetchpriority="high">
+
+  <link rel="stylesheet" href="css/styles.css">
+  <script>document.documentElement.classList.add('js')</script>
+</head>
+<body>
+  <main class="page" id="page">
+
+    <!-- ── Perfil ─────────────────────────────────────────── -->
+    <header class="profile">
+      <img class="profile__avatar" src="img/avatar.webp" width="400" height="400" alt="Salty">
+
+      <div class="profile__info">
+        <h1 class="profile__name">
+          Salty
+          <img class="profile__badge" src="img/verificado.webp" width="96" height="96" alt="Cuenta verificada">
+        </h1>
+
+        <p class="profile__followers">
+          <svg class="profile__people" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+          <!-- Valor de respaldo: se muestra si JavaScript no carga. -->
+          <span class="counter" id="followers" data-value="10957" aria-label="10957 seguidores">10957</span>
+        </p>
+
+        <nav class="profile__social" aria-label="Redes sociales">
+          <a href="https://www.tiktok.com/@salty.cn" target="_blank" rel="noopener" aria-label="TikTok">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.53.02C13.84 0 15.14.01 16.44 0c.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>
+          </a>
+          <a href="https://www.instagram.com/saltychina/" target="_blank" rel="noopener" aria-label="Instagram">
+            <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="2.1" y="2.1" width="19.8" height="19.8" rx="5.6"/><circle cx="12" cy="12" r="4.4"/><circle cx="17.6" cy="6.4" r="1.15" fill="currentColor" stroke="none"/></svg>
+          </a>
+          <!-- CAMBIA: enlace de tu canal de YouTube -->
+          <a href="https://www.youtube.com/" target="_blank" rel="noopener" aria-label="YouTube">
+            <svg viewBox="0 0 34 24" aria-hidden="true"><rect width="34" height="24" rx="6.5"/><path d="M13.5 6.8v10.4l8.6-5.2z" fill="#fff"/></svg>
+          </a>
+        </nav>
+      </div>
+    </header>
+
+    <!-- ── Cupón principal (abre la ventana de registro) ──── -->
+    <a class="promo" id="promo"
+       href="https://www.usfans.com/register?ref=GRAS35"
+       aria-haspopup="dialog" aria-controls="sheet">
+      <img src="img/cupon.webp" width="1400" height="679"
+           alt="40% en tu envío y más de 800€ en cupones" fetchpriority="high">
+      <span class="promo__shine" aria-hidden="true"></span>
+    </a>
+
+    <!-- ── Enlaces (CAMBIA los href por tus enlaces) ──────── -->
+    <section class="grid" aria-label="Enlaces">
+      <a class="tile" href="https://t.me/" target="_blank" rel="noopener">
+        <img src="img/telegram.webp" width="640" height="639" alt="Telegram: productos diarios" loading="lazy" decoding="async">
+      </a>
+      <a class="tile" href="#" target="_blank" rel="noopener">
+        <img src="img/guia.webp" width="640" height="639" alt="Guía: cómo comprar" loading="lazy" decoding="async">
+      </a>
+      <a class="tile" href="#" target="_blank" rel="noopener">
+        <img src="img/spreadsheet.webp" width="640" height="639" alt="Spreadsheet: más de 10K productos" loading="lazy" decoding="async">
+      </a>
+      <a class="tile" href="#" target="_blank" rel="noopener">
+        <img src="img/zapatillas.webp" width="640" height="639" alt="Zapatillas: mejor proveedor" loading="lazy" decoding="async">
+      </a>
+    </section>
+  </main>
+
+  <!-- ── Ventana superpuesta con el registro de USFans ───── -->
+  <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title" aria-hidden="true">
+    <div class="sheet__backdrop" data-close></div>
+    <div class="sheet__panel" id="sheet-panel">
+      <div class="sheet__bar" id="sheet-bar">
+        <span class="sheet__grabber" aria-hidden="true"></span>
+        <div class="sheet__title">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 4 5v6c0 5 3.4 9.7 8 11 4.6-1.3 8-6 8-11V5l-8-3zm-1.2 14.2-3.5-3.5 1.4-1.4 2.1 2.1 4.9-4.9 1.4 1.4-6.3 6.3z"/></svg>
+          <span id="sheet-title">usfans.com</span>
+        </div>
+        <a class="sheet__ext" href="https://www.usfans.com/register?ref=GRAS35" target="_blank" rel="noopener" aria-label="Abrir en el navegador">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3h7v7h-2V6.4l-9.3 9.3-1.4-1.4L17.6 5H14V3zM5 5h6v2H5v12h12v-6h2v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"/></svg>
+        </a>
+        <button class="sheet__close" type="button" data-close aria-label="Cerrar">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.3 5.7 12 12l6.3 6.3-1.4 1.4L10.6 13.4 4.3 19.7l-1.4-1.4L9.2 12 2.9 5.7l1.4-1.4 6.3 6.3 6.3-6.3z" transform="translate(1 0)"/></svg>
+        </button>
+      </div>
+      <div class="sheet__body" id="sheet-body">
+        <div class="sheet__loader" aria-hidden="true"><span></span></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js" defer></script>
+</body>
+</html>
