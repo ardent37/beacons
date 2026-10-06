@@ -345,5 +345,22 @@ function initSheet() {
   });
 }
 
+/* ──────────────────────────────────────────────────────────────────────────
+   Botón de Telegram: enlace directo según el país
+   ────────────────────────────────────────────────────────────────────────── */
+
+// El país se pide nada más cargar, así el botón ya lleva directo al grupo
+// correcto y Telegram se abre en otra pestaña sin páginas intermedias.
+// Si algo falla, el botón sigue apuntando a /chats/, que hace lo mismo.
+function initChats() {
+  const tile = document.getElementById('tile-chats');
+  if (!tile || !window.SaltyChats) return;
+  tile.href = SaltyChats.linkFor(null); // provisional: por zona horaria
+  SaltyChats.getCountry(4000).then((country) => {
+    if (country) tile.href = SaltyChats.linkFor(country);
+  });
+}
+
 initFollowers();
 initSheet();
+initChats();

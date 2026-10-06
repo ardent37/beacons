@@ -28,50 +28,22 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
     p { margin: 0; color: var(--muted); }
-    a { color: #fc7514; }
   </style>
 </head>
 <body>
+  <!-- Respaldo: normalmente el botón de la web ya lleva directo a Telegram -->
   <div>
     <div class="spin" aria-hidden="true"></div>
-    <p id="msg">Abriendo…</p>
-    <noscript><p><a href="https://t.me/addlist/Epf3JZL3YQ4yN2Q0">Pulsa aquí para continuar</a></p></noscript>
+    <p>Abriendo…</p>
   </div>
 
+  <script src="links.js"></script>
   <script>
-    // España y Latinoamérica → un enlace; resto del mundo → otro.
-    var LINKS = {
-      hispano: 'https://t.me/addlist/Epf3JZL3YQ4yN2Q0',   // ES, MX, AR, PE, EC, CO
-      resto:   'https://t.me/addlist/YAN-SroiRYVlNWVh',   // cualquier otro país
-    };
-    var HISPANO = ['ES', 'MX', 'AR', 'PE', 'EC', 'CO'];
-    var COUNTRY_API = 'https://salty-followers.ardentcone.workers.dev/country';
-
-    // Si el Worker no responde, se adivina por la zona horaria del móvil
-    var HISPANO_TZ = /^(Europe\/Madrid|Atlantic\/Canary|Africa\/Ceuta|America\/(Mexico_City|Cancun|Merida|Monterrey|Matamoros|Chihuahua|Ciudad_Juarez|Ojinaga|Mazatlan|Bahia_Banderas|Hermosillo|Tijuana|Argentina\/.+|Buenos_Aires|Cordoba|Lima|Guayaquil|Bogota)|Pacific\/Galapagos)$/;
-
-    var done = false;
-    function go(country) {
-      if (done) return;
-      done = true;
-      var hispano;
-      if (country) {
-        hispano = HISPANO.indexOf(String(country).toUpperCase()) !== -1;
-      } else {
-        try { hispano = HISPANO_TZ.test(Intl.DateTimeFormat().resolvedOptions().timeZone); }
-        catch (e) { hispano = true; }
-      }
-      var url = hispano ? LINKS.hispano : LINKS.resto;
-      document.getElementById('msg').innerHTML =
-        'Abriendo… <br><a href="' + url + '">Pulsa aquí si no se abre</a>';
-      location.replace(url);
-    }
-
-    setTimeout(function () { go(null); }, 2500); // nunca esperar más de 2,5 s
-    fetch(COUNTRY_API, { cache: 'no-store' })
-      .then(function (r) { return r.json(); })
-      .then(function (d) { go(d && d.country); })
-      .catch(function () { go(null); });
+    SaltyChats.getCountry(2500).then(function (country) {
+      location.replace(SaltyChats.linkFor(country));
+    });
+    // Al volver a esta pestaña (p. ej. desde la app de Telegram), mostrar la web
+    addEventListener('pageshow', function (e) { if (e.persisted) location.replace('../'); });
   </script>
 </body>
 </html>
