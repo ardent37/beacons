@@ -38,11 +38,9 @@
   <script async id="umami-script" src="https://cloud.umami.is/script.js" data-website-id="d85f7cbf-d246-4f98-a8bc-3f9cb7958729" data-domains="saltychina.com"></script>
   <script>
     document.documentElement.classList.add('js');
-    // Navegador interno de TikTok: muestra el aviso "Abre desde el navegador".
+    // Navegador interno de TikTok: algunos botones sugieren abrir en el navegador.
     // Para probarlo en un ordenador, añade ?tiktok a la URL.
-    // PRUEBA TEMPORAL: aviso desactivado dentro de TikTok (se restaura con la etiqueta git "con-aviso-tiktok").
-    var AVISO_TIKTOK = false;
-    if ((AVISO_TIKTOK && /musical_ly|bytedancewebview|tiktok|trill_/i.test(navigator.userAgent)) || /[?&]tiktok/.test(location.search)) {
+    if (/musical_ly|bytedancewebview|tiktok|trill_/i.test(navigator.userAgent) || /[?&]tiktok/.test(location.search)) {
       document.documentElement.classList.add('in-tiktok');
     }
   </script>
@@ -80,23 +78,6 @@
       </div>
     </header>
 
-    <!-- ── Aviso: solo se ve dentro del navegador de TikTok ─ -->
-    <section class="inapp" aria-labelledby="inapp-title">
-      <svg class="inapp__lock" viewBox="0 0 48 64" aria-hidden="true"><path d="M10 26V17a14 14 0 0 1 28 0v9h-6v-9a8 8 0 0 0-16 0v9z"/><path fill-rule="evenodd" d="M4 26h40a2 2 0 0 1 2 2v32a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V28a2 2 0 0 1 2-2zm20 13a5 5 0 0 0-2.5 9.33V54a2.5 2.5 0 0 0 5 0v-5.67A5 5 0 0 0 24 39z"/></svg>
-      <h2 class="inapp__title" id="inapp-title">Abre desde el navegador</h2>
-      <ol class="inapp__steps">
-        <li><span class="inapp__num" aria-hidden="true">1</span><span>Haz clic en <span class="inapp__dots" role="img" aria-label="los tres puntos"><i></i><i></i><i></i></span> en la esquina superior derecha</span></li>
-        <li><span class="inapp__num" aria-hidden="true">2</span><span>Luego <strong>“Abrir en el navegador”</strong></span></li>
-      </ol>
-    </section>
-
-    <!-- Flechas animadas que señalan el menú ··· de TikTok -->
-    <svg class="inapp-arrows" viewBox="0 0 56 160" aria-hidden="true">
-      <path class="inapp-arrows__a1" d="M28 0 56 54Q28 42 0 54Z"/>
-      <path class="inapp-arrows__a2" d="M28 53 56 107Q28 95 0 107Z"/>
-      <path class="inapp-arrows__a3" d="M28 106 56 160Q28 148 0 160Z"/>
-    </svg>
-
     <!-- ── Escritorio: registro de USFans siempre visible ─── -->
     <section class="desk" aria-label="Registro en USFans">
       <div class="desk__phone" id="desk-phone">
@@ -133,16 +114,16 @@
       <!-- ── Enlaces ───────────────────────────────────────── -->
       <section class="grid" aria-label="Enlaces">
         <!-- Misma pestaña a propósito: el móvil abre la app de Telegram y la web se queda aquí -->
-        <a class="tile" id="tile-chats" href="chats/" data-track="telegram">
+        <a class="tile" id="tile-chats" href="chats/" data-track="telegram" data-suggest>
           <img src="img/telegram.webp" width="640" height="639" alt="Telegram: productos diarios" loading="lazy" decoding="async">
         </a>
-        <a class="tile" href="https://drive.google.com/file/d/1kQzCQSVwv_CeuGbwsSFfTn5j45NPnd0T/view?usp=sharing" target="_blank" rel="noopener" data-track="guia">
+        <a class="tile" href="https://drive.google.com/file/d/1kQzCQSVwv_CeuGbwsSFfTn5j45NPnd0T/view?usp=sharing" target="_blank" rel="noopener" data-track="guia" data-suggest>
           <img src="img/guia.webp" width="640" height="639" alt="Guía: cómo comprar" loading="lazy" decoding="async">
         </a>
-        <a class="tile" href="https://docs.google.com/spreadsheets/d/1AaeeQNl37wGg2_ieCViQ0rrVP7eCFcYuLlr45FV4uW0/edit?usp=sharing" target="_blank" rel="noopener" data-track="spreadsheet">
+        <a class="tile" href="https://docs.google.com/spreadsheets/d/1AaeeQNl37wGg2_ieCViQ0rrVP7eCFcYuLlr45FV4uW0/edit?usp=sharing" target="_blank" rel="noopener" data-track="spreadsheet" data-suggest>
           <img src="img/spreadsheet.webp" width="640" height="639" alt="Spreadsheet: más de 10K productos" loading="lazy" decoding="async">
         </a>
-        <a class="tile" href="https://doppel.fit/@salty/best-shoes-sneakers-budget" target="_blank" rel="noopener" data-track="zapatillas">
+        <a class="tile" href="https://doppel.fit/@salty/best-shoes-sneakers-budget" target="_blank" rel="noopener" data-track="zapatillas" data-suggest>
           <img src="img/zapatillas.webp" width="640" height="639" alt="Zapatillas: mejor proveedor" loading="lazy" decoding="async">
         </a>
       </section>
@@ -170,6 +151,31 @@
         <div class="sheet__loader" aria-hidden="true"><span></span></div>
       </div>
     </div>
+  </div>
+
+  <!-- ── TikTok: sugerencia de abrir en el navegador ────── -->
+  <div class="suggest" id="suggest" role="dialog" aria-modal="true" aria-labelledby="suggest-title" aria-hidden="true">
+    <div class="suggest__backdrop" data-suggest-close></div>
+    <div class="suggest__card">
+      <svg class="suggest__globe" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><ellipse cx="12" cy="12" rx="4.6" ry="10"/><path d="M12 2v20M3.4 8.2h17.2M3.4 15.8h17.2"/></svg>
+      <h2 class="suggest__title" id="suggest-title">Se recomienda <span>abrir desde el navegador</span></h2>
+      <p class="suggest__note">*Algunos enlaces podrían no funcionar en TikTok*</p>
+      <ol class="inapp__steps">
+        <li><span class="inapp__num" aria-hidden="true">1</span><span>Haz clic en <span class="inapp__dots" role="img" aria-label="los tres puntos"><i></i><i></i><i></i></span> en la esquina superior derecha</span></li>
+        <li><span class="inapp__num" aria-hidden="true">2</span><span>Luego <strong>“Abrir en el navegador”</strong></span></li>
+      </ol>
+      <button class="suggest__continue" type="button" id="suggest-continue">
+        Continuar en TikTok
+        <small>(no recomendado)</small>
+      </button>
+    </div>
+
+    <!-- Flechas animadas que señalan el menú ··· de TikTok -->
+    <svg class="inapp-arrows" viewBox="0 0 56 160" aria-hidden="true">
+      <path class="inapp-arrows__a1" d="M28 0 56 54Q28 42 0 54Z"/>
+      <path class="inapp-arrows__a2" d="M28 53 56 107Q28 95 0 107Z"/>
+      <path class="inapp-arrows__a3" d="M28 106 56 160Q28 148 0 160Z"/>
+    </svg>
   </div>
 
   <script src="chats/links.js" defer></script>

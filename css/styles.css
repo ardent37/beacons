@@ -584,39 +584,110 @@ html.sheet-open .page {
   html.sheet-open .page { transform: scale(0.97); }
 }
 
-/* ── Aviso para el navegador interno de TikTok ───────── */
+/* ── TikTok: sugerencia de abrir en el navegador ──────── */
 
-.inapp,
-.inapp-arrows { display: none; }
+.suggest {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  display: grid;
+  place-items: center;
+  padding: 24px var(--gutter);
+  visibility: hidden;
+  pointer-events: none;
+  transition: visibility 0s linear 0.4s; /* se oculta al terminar de salir */
+}
 
-.in-tiktok .promo,
-.in-tiktok .grid { display: none; }
+.suggest.is-open {
+  visibility: visible;
+  pointer-events: auto;
+  transition-delay: 0s;
+}
 
-.in-tiktok .inapp {
-  display: block;
-  padding: clamp(22px, 7vw, 30px) clamp(20px, 7vw, 32px) clamp(26px, 8vw, 36px);
-  border-radius: clamp(20px, 6vw, 26px);
+.suggest__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgb(18 16 14 / 0.55);
+  -webkit-backdrop-filter: blur(10px) saturate(1.2);
+  backdrop-filter: blur(10px) saturate(1.2);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  touch-action: none;
+}
+
+/* Entra con un pequeño rebote; sale más rápido y sin rebote */
+.suggest__card {
+  position: relative;
+  width: min(100%, 400px);
+  padding: clamp(24px, 7vw, 32px) clamp(20px, 6.5vw, 30px) clamp(20px, 6vw, 26px);
+  border-radius: clamp(22px, 6.5vw, 28px);
   background: #5c5c5c;
   color: #fff;
-  box-shadow: var(--shadow);
-}
-
-.js.in-tiktok .inapp { animation: rise 0.6s var(--ease-out) 0.08s both; }
-
-.inapp__lock {
-  width: clamp(44px, 13vw, 54px);
-  height: auto;
-  margin: 0 auto clamp(16px, 5vw, 22px);
-  fill: #fff;
-}
-
-.inapp__title {
-  margin: 0 0 clamp(16px, 5vw, 22px);
-  font-size: clamp(21px, 6.4vw, 27px);
-  font-weight: 500;
-  line-height: 1.15;
-  letter-spacing: -0.02em;
   text-align: center;
+  box-shadow: 0 30px 80px -20px rgb(0 0 0 / 0.6), 0 0 0 1px rgb(255 255 255 / 0.06);
+  opacity: 0;
+  transform: translateY(18px) scale(0.94);
+  transition: transform 0.25s ease-in, opacity 0.2s ease-in;
+}
+
+.suggest.is-open .suggest__backdrop { opacity: 1; }
+
+.suggest.is-open .suggest__card {
+  opacity: 1;
+  transform: none;
+  transition: transform 0.55s cubic-bezier(0.34, 1.4, 0.64, 1), opacity 0.25s ease-out;
+}
+
+.suggest__globe {
+  width: clamp(48px, 14vw, 58px);
+  height: auto;
+  margin: 0 auto clamp(14px, 4vw, 18px);
+  fill: none;
+  stroke: #fff;
+  stroke-width: 1.7;
+}
+
+.suggest__title {
+  margin: 0 0 10px;
+  font-size: clamp(21px, 6.4vw, 26px);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.suggest__title span { display: block; }
+
+.suggest__note {
+  margin: 0 0 clamp(18px, 5vw, 22px);
+  font-size: clamp(11.5px, 3.3vw, 14px);
+  color: var(--orange);
+  text-wrap: balance;
+}
+
+.suggest .inapp__steps { text-align: left; margin-bottom: clamp(20px, 6vw, 26px); }
+
+.suggest__continue {
+  display: grid;
+  gap: 2px;
+  width: 100%;
+  padding: 14px 16px 12px;
+  border: 0;
+  border-radius: 22px;
+  background: var(--orange);
+  color: #fff;
+  font: inherit;
+  font-size: clamp(17px, 5vw, 20px);
+  line-height: 1.2;
+  cursor: pointer;
+  box-shadow: 0 10px 24px -12px rgb(252 117 20 / 0.7);
+  transition: transform 0.15s var(--ease-out), filter 0.2s;
+}
+
+.suggest__continue small { font-size: 0.68em; opacity: 0.9; }
+.suggest__continue:active { transform: scale(0.97); filter: brightness(0.95); }
+
+@media (hover: hover) {
+  .suggest__continue:hover { filter: brightness(1.06); }
 }
 
 .inapp__steps {
@@ -625,7 +696,7 @@ html.sheet-open .page {
   margin: 0;
   padding: 0;
   list-style: none;
-  font-size: clamp(16px, 4.8vw, 20px);
+  font-size: clamp(16px, 4.8vw, 19px);
   line-height: 1.35;
 }
 
@@ -668,20 +739,27 @@ html.sheet-open .page {
   background: currentColor;
 }
 
-.in-tiktok .inapp-arrows {
-  display: block;
+/* Flechas que señalan el menú ··· de TikTok (aparecen con la ventana) */
+.inapp-arrows {
   position: fixed;
-  z-index: 50;
+  z-index: 1;
   top: calc(8px + env(safe-area-inset-top));
   right: calc(12px + env(safe-area-inset-right));
   width: clamp(26px, 8vw, 34px);
   height: auto;
   overflow: visible;
   pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.suggest.is-open .inapp-arrows {
+  opacity: 1;
+  transition-delay: 0.15s;
   animation: arrows-bob 1.4s var(--ease-out) infinite;
 }
 
-/* Se iluminan de abajo arriba, en cascada, señalando el menú ··· */
+/* Se iluminan de abajo arriba, en cascada */
 .inapp-arrows path { animation: arrows-chase 1.4s ease-in-out infinite; }
 .inapp-arrows__a1 { fill: #75ff60; animation-delay: 0.4s !important; }
 .inapp-arrows__a2 { fill: #62ca53; animation-delay: 0.2s !important; }

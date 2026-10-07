@@ -428,15 +428,83 @@ function initChats() {
 
 // Clics en enlaces y redes: cualquier elemento con data-track="nombre"
 function initTracking() {
+  // Se escucha después de la sugerencia de TikTok: si esta frena el clic
+  // (defaultPrevented), no se cuenta hasta que el usuario continúe.
   document.addEventListener('click', (e) => {
     const el = e.target.closest('[data-track]');
-    if (el) track(el.dataset.track, el.dataset.grupo ? { grupo: el.dataset.grupo } : undefined);
-  }, { capture: true });
+    if (el && !e.defaultPrevented) track(el.dataset.track, el.dataset.grupo ? { grupo: el.dataset.grupo } : undefined);
+  });
 
-  // Visitas que llegan desde el navegador de TikTok y ven el aviso
-  if (root.classList.contains('in-tiktok')) track('aviso-tiktok');
+  // Visitas que llegan desde el navegador de TikTok
+  if (root.classList.contains('in-tiktok')) track('visita-tiktok');
 }
 
+/* ──────────────────────────────────────────────────────────────────────────
+   TikTok: sugerencia de abrir en el navegador
+   ────────────────────────────────────────────────────────────────────────── */
+
+// Dentro de TikTok, los botones con data-suggest (Telegram, guía, spreadsheet,
+// zapatillas) muestran primero una ventana que recomienda abrir la web en el
+// navegador. "Continuar en TikTok" abre el enlace igualmente y no vuelve a
+// preguntar en esa visita.
+function initSuggest() {
+  const modal = document.getElementById('suggest');
+  const continueBtn = document.getElementById('suggest-continue');
+  if (!modal || !root.classList.contains('in-tiktok')) return;
+
+  const SKIP_KEY = 'salty:continuar-tiktok';
+  let pending = null;
+  let bypass = false;
+  let lastFocus = null;
+
+  const skip = () => { try { return sessionStorage.getItem(SKIP_KEY) === '1'; } catch { return false; } };
+
+  function open(link) {
+    pending = link;
+    lastFocus = document.activeElement;
+    root.classList.add('is-locked');
+    modal.classList.add('is-open');
+    modal.removeAttribute('aria-hidden');
+    setTimeout(() => continueBtn.focus({ preventScroll: true }), 300);
+    track('aviso-tiktok', { enlace: link.dataset.track });
+  }
+
+  function close() {
+    modal.classList.remove('is-open');
+    modal.setAttribute('aria-hidden', 'true');
+    root.classList.remove('is-locked');
+    lastFocus?.focus?.({ preventScroll: true });
+  }
+
+  document.addEventListener('click', (e) => {
+    const link = e.target.closest('a[data-suggest]');
+    if (!link || bypass || skip()) return;
+    e.preventDefault();
+    open(link);
+  });
+
+  continueBtn.addEventListener('click', () => {
+    const link = pending;
+    try { sessionStorage.setItem(SKIP_KEY, '1'); } catch {}
+    close();
+    if (!link) return;
+    track('continuar-tiktok', { enlace: link.dataset.track });
+    // Clic "real" en el enlace: respeta si abre en esta pestaña o en otra
+    bypass = true;
+    link.click();
+    bypass = false;
+  });
+
+  modal.addEventListener('click', (e) => {
+    if (e.target.closest('[data-suggest-close]')) close();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.classList.contains('is-open')) close();
+  });
+}
+
+initSuggest(); // antes que initTracking: su clic se procesa primero
 initTracking();
 initFollowers();
 initSheet();
