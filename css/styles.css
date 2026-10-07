@@ -701,9 +701,12 @@ html.sheet-open .page {
     --bar-h: 68px;
     /* El "móvil" ocupa el alto disponible; la columna derecha se ajusta a él */
     --frame-h: clamp(540px, calc(100dvh - var(--bar-h) - 96px), 820px);
-    /* 390 = ancho de iPhone (USFans carga en versión móvil) + la barra de scroll
-       del sistema, que mide app.js (0 en Mac) */
-    --frame-w: calc(390px + var(--sb, 0px));
+    /* USFans se carga a 390 px (ancho de iPhone, para que use su versión móvil)
+       y se muestra al 90 % dentro de una "pantalla" con margen blanco alrededor */
+    --site-w: 390px;
+    --screen-scale: 0.9;
+    --screen-pad: 20px;
+    --frame-w: calc(var(--site-w) * var(--screen-scale) + var(--screen-pad) * 2);
     --col-gap: clamp(40px, 5vw, 72px);
     --gap: 16px;
     /* cupón (2,06:1) + 2 filas de botones cuadrados = alto del móvil */
@@ -766,14 +769,15 @@ html.sheet-open .page {
     padding-right: var(--col-gap);
   }
 
+  /* Tarjeta blanca que hace de "móvil" */
   .desk__phone {
     position: relative;
     display: flex;
     flex-direction: column;
     width: var(--frame-w);
     height: var(--frame-h);
-    overflow: hidden;
-    border-radius: 34px;
+    padding: 0 var(--screen-pad) var(--screen-pad);
+    border-radius: 36px;
     background: #fff;
     box-shadow:
       0 0 0 1px rgb(0 0 0 / 0.06),
@@ -782,12 +786,50 @@ html.sheet-open .page {
     transition: box-shadow 0.4s var(--ease-out), transform 0.4s var(--ease-out);
   }
 
-  /* USFans se pasa unos px de ancho con barras de scroll visibles (Windows):
-     su barra horizontal queda fuera del marco */
-  .desk .sheet__body iframe { bottom: auto; height: calc(100% + var(--sb, 0px)); }
+  /* Cabecera integrada (en vez de una barra de navegador) */
+  .desk__bar {
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 54px;
+    padding: 0 0 0 6px;
+    margin-right: -6px;
+  }
 
-  .desk__bar { height: 52px; padding: 0 8px 0 18px; cursor: default; touch-action: auto; }
-  .desk__bar .sheet__title { color: #444; }
+  .desk__title {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #3b3b3b;
+  }
+
+  .desk__title svg { width: 16px; height: 16px; fill: #22a559; flex: none; }
+  .desk__dot { margin: 0 2px; color: #b5b5b5; }
+  .desk__ext { width: 38px; height: 38px; color: #6b6b6b; }
+
+  /* La "pantalla": USFans escalado, sin barras de scroll a la vista */
+  /* Sin borde: el blanco de la tarjeta y el de USFans se funden en un margen
+     continuo; arriba y abajo el contenido se desvanece suavemente al hacer scroll */
+  .desk__screen {
+    flex: 1;
+    overflow: hidden;
+    background: #fff;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 12px, #000 calc(100% - 22px), transparent 100%);
+    mask-image: linear-gradient(to bottom, transparent 0, #000 12px, #000 calc(100% - 22px), transparent 100%);
+  }
+
+  /* El iframe mide 390 px + la barra de scroll del sistema (la mide app.js;
+     0 en Mac): así las barras quedan fuera de la pantalla, a la derecha y abajo */
+  .desk__screen iframe {
+    inset: 0 auto auto 0;
+    width: calc(var(--site-w) + var(--sb, 0px));
+    height: calc(100% / var(--screen-scale) + var(--sb, 0px));
+    transform: scale(var(--screen-scale));
+    transform-origin: 0 0;
+  }
 
   /* Al pulsar el cupón: el móvil se ilumina para señalar el formulario */
   .desk__phone.is-pulse { animation: frame-pulse 1.2s var(--ease-out); }
