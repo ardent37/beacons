@@ -245,20 +245,32 @@ a { color: inherit; text-decoration: none; }
 }
 
 /* Contorno de luz que recorre el borde */
-.promo::before {
-  content: "";
+/* Contorno de luz que recorre el borde: un degradado cuadrado que gira por
+   detrás de la tarjeta y asoma 2 px por los lados (funciona en todos los navegadores) */
+.promo__ring {
   position: absolute;
   inset: -2px;
   z-index: -1;
+  overflow: hidden;
   border-radius: calc(var(--radius) + 2px);
+  pointer-events: none;
+}
+
+.promo__ring::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 115%;
+  aspect-ratio: 1;
   background: conic-gradient(
-    from var(--angle, 0deg),
     transparent 0deg 250deg,
     rgb(252 117 20 / 0.15) 280deg,
     #ff9a3d 330deg,
     #fff3e6 350deg,
     transparent 360deg
   );
+  transform: translate(-50%, -50%) rotate(0deg);
   animation: promo-border 3.6s linear infinite;
 }
 
@@ -305,14 +317,8 @@ a { color: inherit; text-decoration: none; }
   animation-delay: 0.06s;
 }
 
-@property --angle {
-  syntax: "<angle>";
-  inherits: false;
-  initial-value: 0deg;
-}
-
 @keyframes promo-border {
-  to { --angle: 360deg; }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
 @keyframes promo-shine {
@@ -821,13 +827,16 @@ html.sheet-open .page {
     mask-image: linear-gradient(to bottom, transparent 0, #000 12px, #000 calc(100% - 22px), transparent 100%);
   }
 
-  /* El iframe mide 390 px + la barra de scroll del sistema (la mide app.js;
-     0 en Mac): así las barras quedan fuera de la pantalla, a la derecha y abajo */
+  /* Con barras de scroll visibles (Windows), USFans ocupa también el hueco de
+     la barra y su contenido queda descentrado. El iframe se ensancha 2 barras
+     y se desplaza 1 a la izquierda: se ve la franja central, con el mismo
+     margen a cada lado, y las barras quedan fuera (a la derecha y abajo).
+     --sb lo mide app.js (0 en Mac, donde no hace falta nada de esto). */
   .desk__screen iframe {
     inset: 0 auto auto 0;
-    width: calc(var(--site-w) + var(--sb, 0px));
+    width: calc(var(--site-w) + var(--sb, 0px) * 2);
     height: calc(100% / var(--screen-scale) + var(--sb, 0px));
-    transform: scale(var(--screen-scale));
+    transform: scale(var(--screen-scale)) translateX(calc(var(--sb, 0px) * -1));
     transform-origin: 0 0;
   }
 
