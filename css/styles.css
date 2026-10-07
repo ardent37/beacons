@@ -22,6 +22,7 @@
   --social: var(--orange);      /* iconos TikTok / Instagram / YouTube */
   --yt-play: #ffffff;           /* triángulo del icono de YouTube */
   --avatar-ring: rgb(0 0 0 / 0.06);
+  --line: rgb(0 0 0 / 0.1);       /* separadores (versión de ordenador) */
 
   /* Superficie y forma */
   --radius: 14px;
@@ -47,6 +48,7 @@
     --social: #f2f2f2;
     --yt-play: #2e2d2d;
     --avatar-ring: rgb(255 255 255 / 0.1);
+    --line: rgb(255 255 255 / 0.12);
     --social-hover: rgb(255 255 255 / 0.08);
     --shadow: 0 1px 2px rgb(0 0 0 / 0.2), 0 12px 30px -14px rgb(0 0 0 / 0.6);
     --shadow-hover: 0 2px 4px rgb(0 0 0 / 0.25), 0 20px 38px -16px rgb(0 0 0 / 0.7);
@@ -687,6 +689,155 @@ html.sheet-open .page {
 @keyframes arrows-bob {
   0%, 100% { transform: translateY(0); }
   45%      { transform: translateY(-8px); }
+}
+
+/* ── Versión de ordenador ─────────────────────────────── */
+
+/* Solo existe en pantallas grandes */
+.desk { display: none; }
+
+@media (min-width: 980px) {
+  :root {
+    --bar-h: 68px;
+    /* El "móvil" ocupa el alto disponible; la columna derecha se ajusta a él */
+    --frame-h: clamp(540px, calc(100dvh - var(--bar-h) - 96px), 820px);
+    /* 390 = ancho de iPhone (USFans carga en versión móvil) + la barra de scroll
+       del sistema, que mide app.js (0 en Mac) */
+    --frame-w: calc(390px + var(--sb, 0px));
+    --col-gap: clamp(40px, 5vw, 72px);
+    --gap: 16px;
+    /* cupón (2,06:1) + 2 filas de botones cuadrados = alto del móvil */
+    --side-w: calc((var(--frame-h) - var(--gap)) / 1.485);
+  }
+
+  .page {
+    max-width: none;
+    min-height: 100dvh;
+    padding: 0 0 48px;
+    display: grid;
+    grid-template-columns: 1fr auto auto 1fr;
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+      "bar bar  bar  bar"
+      ".   desk side .";
+    row-gap: clamp(28px, 4vh, 48px);
+  }
+
+  /* Barra superior fija y translúcida */
+  .profile {
+    grid-area: bar;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    justify-content: flex-start;
+    gap: 14px;
+    height: var(--bar-h);
+    margin: 0;
+    padding: 0 max(28px, env(safe-area-inset-left));
+    background: color-mix(in srgb, var(--bg) 82%, transparent);
+    -webkit-backdrop-filter: blur(16px) saturate(1.5);
+    backdrop-filter: blur(16px) saturate(1.5);
+    border-bottom: 1px solid var(--line);
+    box-shadow: 0 12px 32px -22px rgb(0 0 0 / 0.35);
+  }
+
+  .profile__avatar { width: 42px; }
+
+  .profile__info {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+  }
+
+  .profile__name { font-size: 24px; gap: 5px; }
+  .profile__followers { font-size: 18px; gap: 8px; }
+  .profile__social { margin-left: 0; gap: 2px; }
+  .profile__social a { min-width: 40px; height: 40px; }
+  .profile__social svg { width: 22px; height: 22px; }
+  .profile__social a:last-child svg { width: 26px; }
+
+  /* Columna izquierda: el registro */
+  .desk {
+    grid-area: desk;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    padding-right: var(--col-gap);
+  }
+
+  .desk__phone {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: var(--frame-w);
+    height: var(--frame-h);
+    overflow: hidden;
+    border-radius: 34px;
+    background: #fff;
+    box-shadow:
+      0 0 0 1px rgb(0 0 0 / 0.06),
+      0 2px 6px rgb(0 0 0 / 0.04),
+      0 34px 80px -28px rgb(0 0 0 / 0.38);
+    transition: box-shadow 0.4s var(--ease-out), transform 0.4s var(--ease-out);
+  }
+
+  /* USFans se pasa unos px de ancho con barras de scroll visibles (Windows):
+     su barra horizontal queda fuera del marco */
+  .desk .sheet__body iframe { bottom: auto; height: calc(100% + var(--sb, 0px)); }
+
+  .desk__bar { height: 52px; padding: 0 8px 0 18px; cursor: default; touch-action: auto; }
+  .desk__bar .sheet__title { color: #444; }
+
+  /* Al pulsar el cupón: el móvil se ilumina para señalar el formulario */
+  .desk__phone.is-pulse { animation: frame-pulse 1.2s var(--ease-out); }
+
+  @keyframes frame-pulse {
+    0%   { transform: scale(1); }
+    25%  { transform: scale(1.015);
+           box-shadow: 0 0 0 4px rgb(252 117 20 / 0.55), 0 34px 80px -28px rgb(252 117 20 / 0.5); }
+    100% { transform: scale(1); }
+  }
+
+  .desk__note {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+    font-size: 14px;
+    color: var(--muted);
+  }
+
+  .desk__note svg { width: 16px; height: 16px; fill: #22a559; flex: none; }
+  .desk__note strong { font-weight: 500; color: var(--ink); }
+
+  /* Columna derecha: cupón + botones, separada por una línea fina */
+  .side {
+    grid-area: side;
+    align-self: start;
+    width: calc(var(--side-w) + var(--col-gap));
+    padding-left: var(--col-gap);
+    border-left: 1px solid var(--line);
+  }
+
+  .promo { margin-bottom: var(--gap); }
+  .promo { cursor: pointer; }
+
+  /* Entrada escalonada adaptada */
+  .js .desk { animation: rise 0.7s var(--ease-out) 0.05s both; }
+
+  /* La hoja inferior y el efecto de "retroceder" son solo para móvil */
+  .sheet { display: none; }
+  html.sheet-open .page { transform: none; filter: none; }
+}
+
+/* Modo oscuro: el móvil sigue blanco (la web de USFans es clara) */
+@media (min-width: 980px) and (prefers-color-scheme: dark) {
+  .desk__phone {
+    box-shadow:
+      0 0 0 1px rgb(255 255 255 / 0.08),
+      0 34px 80px -24px rgb(0 0 0 / 0.7);
+  }
 }
 
 /* ── Movimiento reducido ──────────────────────────────── */

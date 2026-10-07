@@ -224,6 +224,9 @@ function initSheet() {
   const backdrop = sheet.querySelector('.sheet__backdrop');
   const closeBtn = sheet.querySelector('.sheet__close');
   const mobile = matchMedia('(max-width: 639px)');
+  const desktop = matchMedia('(min-width: 980px)');
+  const deskPhone = document.getElementById('desk-phone');
+  const deskBody = document.getElementById('desk-body');
   const HASH = '#registro';
 
   let iframe = null;
@@ -232,19 +235,34 @@ function initSheet() {
   let lastFocus = null;
   let unlockTimer = 0;
 
-  // Crea el iframe en cuanto el usuario muestra intención (hover / toque),
+  // Monta el iframe de USFans en la hoja (móvil) o en el marco (ordenador).
+  // En móvil se crea en cuanto el usuario muestra intención (hover / toque),
   // así la web ya está cargando cuando la hoja termina de subir.
-  function ensureIframe() {
-    if (iframe) return;
+  function ensureIframe(container = desktop.matches ? deskBody : body) {
+    if (iframe?.parentElement === container) return;
+    if (iframe) {
+      iframe.parentElement.classList.remove('is-loaded');
+      iframe.remove(); // al cambiar el tamaño de la ventana entre móvil y ordenador
+    }
     iframe = document.createElement('iframe');
     iframe.src = promo.href;
     iframe.title = 'Registro en USFans';
     iframe.allow = 'clipboard-read; clipboard-write; payment';
-    iframe.addEventListener('load', () => body.classList.add('is-loaded'), { once: true });
-    body.append(iframe);
+    iframe.addEventListener('load', () => container.classList.add('is-loaded'), { once: true });
+    container.append(iframe);
+  }
+
+  // Ordenador: el registro ya está a la vista; el cupón lo señala
+  function highlightDesk() {
+    const r = deskPhone.getBoundingClientRect();
+    if (r.top < 0 || r.bottom > innerHeight) deskPhone.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    deskPhone.classList.remove('is-pulse');
+    void deskPhone.offsetWidth; // reinicia la animación
+    deskPhone.classList.add('is-pulse');
   }
 
   function open({ push = true } = {}) {
+    if (desktop.matches) return highlightDesk();
     if (isOpen) return;
     isOpen = true;
     clearTimeout(unlockTimer);
@@ -291,9 +309,35 @@ function initSheet() {
     e.preventDefault();
     open();
   });
-  promo.addEventListener('pointerenter', ensureIframe, { once: true });
-  promo.addEventListener('touchstart', ensureIframe, { once: true, passive: true });
-  promo.addEventListener('focus', ensureIframe, { once: true });
+  const warmUp = () => ensureIframe();
+  promo.addEventListener('pointerenter', warmUp, { once: true });
+  promo.addEventListener('touchstart', warmUp, { once: true, passive: true });
+  promo.addEventListener('focus', warmUp, { once: true });
+
+  // Ancho de la barra de scroll del sistema (0 en Mac/móvil), para el marco de ordenador
+  const probe = document.createElement('div');
+  probe.style.cssText = 'position:absolute;top:-200px;width:100px;height:100px;overflow:scroll';
+  document.body.append(probe);
+  root.style.setProperty('--sb', `${probe.offsetWidth - probe.clientWidth}px`);
+  probe.remove();
+
+  // En ordenador el formulario se carga nada más entrar
+  if (desktop.matches) ensureIframe(deskBody);
+  desktop.addEventListener('change', (e) => {
+    if (e.matches) {
+      close();
+      ensureIframe(deskBody);
+    }
+  });
+
+  // Estadísticas: alguien empieza a usar el formulario de escritorio
+  let deskTracked = false;
+  addEventListener('blur', () => {
+    if (!deskTracked && desktop.matches && document.activeElement === iframe) {
+      deskTracked = true;
+      track('cupon', { vista: 'escritorio' });
+    }
+  });
 
   sheet.addEventListener('click', (e) => {
     if (e.target.closest('[data-close]')) close();
