@@ -178,6 +178,18 @@
     </svg>
   </div>
 
+  <!-- ── Llegada desde TikTok: abrir lo que se pulsó, con un toque ── -->
+  <div class="resume" id="resume" role="dialog" aria-labelledby="resume-title" aria-hidden="true">
+    <p class="resume__title" id="resume-title">Continúa donde lo dejaste</p>
+    <button class="resume__close" type="button" aria-label="Cerrar" data-resume-close>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.3 5.7 12 12l6.3 6.3-1.4 1.4L10.6 13.4 4.3 19.7l-1.4-1.4L9.2 12 2.9 5.7l1.4-1.4 6.3 6.3 6.3-6.3z" transform="translate(1 0)"/></svg>
+    </button>
+    <button class="resume__open" type="button" id="resume-open">
+      <span>Abrir <span id="resume-label"></span></span>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3h7v7h-2V6.4l-9.3 9.3-1.4-1.4L17.6 5H14V3zM5 5h6v2H5v12h12v-6h2v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"/></svg>
+    </button>
+  </div>
+
   <script src="chats/links.js" defer></script>
   <script src="js/app.js" defer></script>
 </body>

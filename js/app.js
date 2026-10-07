@@ -444,24 +444,34 @@ function initTracking() {
    ────────────────────────────────────────────────────────────────────────── */
 
 // Dentro de TikTok, los botones con data-suggest (Telegram, guía, spreadsheet,
-// zapatillas) muestran primero una ventana que recomienda abrir la web en el
-// navegador. "Continuar en TikTok" abre el enlace igualmente y no vuelve a
-// preguntar en esa visita.
+// zapatillas) muestran siempre una ventana que recomienda abrir la web en el
+// navegador. "Continuar en TikTok" abre el enlace igualmente.
+//
+// Mientras la ventana está abierta, la dirección guarda qué botón se pulsó
+// (?abrir=guia). Si el usuario usa "Abrir en el navegador", el navegador
+// recibe esa dirección e initResume() le ofrece abrirlo con un toque.
+const INTENT_PARAM = 'abrir';
+
+function setIntent(name) {
+  const url = new URL(location.href);
+  if (name) url.searchParams.set(INTENT_PARAM, name);
+  else url.searchParams.delete(INTENT_PARAM);
+  history.replaceState(history.state, '', url);
+}
+
 function initSuggest() {
   const modal = document.getElementById('suggest');
   const continueBtn = document.getElementById('suggest-continue');
   if (!modal || !root.classList.contains('in-tiktok')) return;
 
-  const SKIP_KEY = 'salty:continuar-tiktok';
   let pending = null;
   let bypass = false;
   let lastFocus = null;
 
-  const skip = () => { try { return sessionStorage.getItem(SKIP_KEY) === '1'; } catch { return false; } };
-
   function open(link) {
     pending = link;
     lastFocus = document.activeElement;
+    setIntent(link.dataset.track);
     root.classList.add('is-locked');
     modal.classList.add('is-open');
     modal.removeAttribute('aria-hidden');
@@ -470,6 +480,7 @@ function initSuggest() {
   }
 
   function close() {
+    setIntent(null);
     modal.classList.remove('is-open');
     modal.setAttribute('aria-hidden', 'true');
     root.classList.remove('is-locked');
@@ -478,14 +489,13 @@ function initSuggest() {
 
   document.addEventListener('click', (e) => {
     const link = e.target.closest('a[data-suggest]');
-    if (!link || bypass || skip()) return;
+    if (!link || bypass) return;
     e.preventDefault();
     open(link);
   });
 
   continueBtn.addEventListener('click', () => {
     const link = pending;
-    try { sessionStorage.setItem(SKIP_KEY, '1'); } catch {}
     close();
     if (!link) return;
     track('continuar-tiktok', { enlace: link.dataset.track });
@@ -504,8 +514,44 @@ function initSuggest() {
   });
 }
 
+// Llegada al navegador desde TikTok con ?abrir=...: los móviles no dejan que
+// una web abra otra pestaña o app sin un toque del usuario, así que se
+// ofrece al instante un botón que lo abre con un solo toque, y la web se
+// queda abierta detrás.
+function initResume() {
+  const panel = document.getElementById('resume');
+  const intent = new URL(location.href).searchParams.get(INTENT_PARAM);
+  if (!panel || !intent || root.classList.contains('in-tiktok')) return;
+
+  setIntent(null); // al recargar no vuelve a salir
+  const link = [...document.querySelectorAll('a[data-suggest]')].find((a) => a.dataset.track === intent);
+  if (!link) return;
+
+  const LABELS = { telegram: 'Telegram', guia: 'la guía', spreadsheet: 'el Spreadsheet', zapatillas: 'Zapatillas' };
+  document.getElementById('resume-label').textContent = LABELS[intent] || intent;
+
+  const hide = () => {
+    panel.classList.remove('is-open');
+    panel.setAttribute('aria-hidden', 'true');
+  };
+
+  document.getElementById('resume-open').addEventListener('click', () => {
+    hide();
+    link.click(); // dentro del toque: el móvil permite abrir la pestaña o la app
+  });
+  panel.querySelector('[data-resume-close]').addEventListener('click', hide);
+
+  // Aparece justo después de la entrada de la página
+  setTimeout(() => {
+    panel.classList.add('is-open');
+    panel.removeAttribute('aria-hidden');
+    track('desde-tiktok', { enlace: intent });
+  }, 350);
+}
+
 initSuggest(); // antes que initTracking: su clic se procesa primero
 initTracking();
 initFollowers();
 initSheet();
 initChats();
+initResume();

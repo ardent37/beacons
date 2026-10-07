@@ -775,6 +775,86 @@ html.sheet-open .page {
   45%      { transform: translateY(-8px); }
 }
 
+/* ── Llegada desde TikTok: "Continúa donde lo dejaste" ─── */
+
+.resume {
+  position: fixed;
+  z-index: 110;
+  left: 50%;
+  bottom: calc(16px + env(safe-area-inset-bottom));
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 10px 8px;
+  width: min(calc(100% - 2 * var(--gutter)), 420px);
+  padding: 14px 12px 16px 20px;
+  border-radius: 24px;
+  background: #5c5c5c;
+  color: #fff;
+  box-shadow: 0 24px 60px -18px rgb(0 0 0 / 0.55), 0 0 0 1px rgb(255 255 255 / 0.06);
+  visibility: hidden;
+  opacity: 0;
+  transform: translate(-50%, calc(100% + 40px));
+  transition: transform 0.3s ease-in, opacity 0.2s ease-in, visibility 0s linear 0.3s;
+}
+
+.resume.is-open {
+  visibility: visible;
+  opacity: 1;
+  transform: translate(-50%, 0);
+  transition: transform 0.6s cubic-bezier(0.34, 1.4, 0.64, 1), opacity 0.25s ease-out, visibility 0s;
+}
+
+.resume__title {
+  margin: 0;
+  font-size: 15px;
+  color: rgb(255 255 255 / 0.85);
+}
+
+.resume__close {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.1);
+  color: #fff;
+  cursor: pointer;
+}
+
+.resume__close svg { width: 16px; height: 16px; fill: currentColor; }
+
+.resume__open {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-right: 8px;
+  padding: 15px 16px;
+  border: 0;
+  border-radius: 18px;
+  background: var(--orange);
+  color: #fff;
+  font: inherit;
+  font-size: 18px;
+  cursor: pointer;
+  box-shadow: 0 10px 24px -12px rgb(252 117 20 / 0.8);
+  animation: resume-pulse 2s ease-in-out 0.9s infinite;
+  transition: transform 0.15s var(--ease-out);
+}
+
+.resume__open svg { width: 18px; height: 18px; fill: currentColor; }
+.resume__open:active { transform: scale(0.97); }
+
+/* Pulso suave para llamar la atención sobre el botón */
+@keyframes resume-pulse {
+  0%, 100% { box-shadow: 0 10px 24px -12px rgb(252 117 20 / 0.8), 0 0 0 0 rgb(252 117 20 / 0.5); }
+  50%      { box-shadow: 0 10px 24px -12px rgb(252 117 20 / 0.8), 0 0 0 8px rgb(252 117 20 / 0); }
+}
+
 /* ── Versión de ordenador ─────────────────────────────── */
 
 /* Solo existe en pantallas grandes */
