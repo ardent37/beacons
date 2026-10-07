@@ -40,7 +40,9 @@
     document.documentElement.classList.add('js');
     // Navegador interno de TikTok: muestra el aviso "Abre desde el navegador".
     // Para probarlo en un ordenador, añade ?tiktok a la URL.
-    if (/musical_ly|bytedancewebview|tiktok|trill_/i.test(navigator.userAgent) || /[?&]tiktok/.test(location.search)) {
+    // PRUEBA TEMPORAL: aviso desactivado dentro de TikTok (se restaura con la etiqueta git "con-aviso-tiktok").
+    var AVISO_TIKTOK = false;
+    if ((AVISO_TIKTOK && /musical_ly|bytedancewebview|tiktok|trill_/i.test(navigator.userAgent)) || /[?&]tiktok/.test(location.search)) {
       document.documentElement.classList.add('in-tiktok');
     }
   </script>
