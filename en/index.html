@@ -40,6 +40,13 @@
        data-domains evita contar las pruebas en local. -->
   <script async id="umami-script" src="https://cloud.umami.is/script.js" data-website-id="d85f7cbf-d246-4f98-a8bc-3f9cb7958729" data-domains="saltychina.com"></script>
   <script>
+    // ?lang=en (lo pone el selector): guarda la elección y limpia la URL
+    try {
+      if (/[?&]lang=en/.test(location.search)) {
+        localStorage.setItem('salty:lang', 'en');
+        history.replaceState(null, '', location.pathname + location.search.replace(/[?&]lang=en/, '').replace(/^&/, '?') + location.hash);
+      }
+    } catch (e) {}
     document.documentElement.classList.add('js');
     // Navegador interno de TikTok: algunos botones sugieren abrir en el navegador.
     // Para probarlo en un ordenador, añade ?tiktok a la URL.
@@ -133,7 +140,7 @@
     </div>
     <!-- ── Selector de idioma (arriba a la derecha) ──────── -->
     <nav class="lang" aria-label="Language">
-      <a href="../" hreflang="es" lang="es" data-lang="es" aria-label="Español">ES</a>
+      <a href="../?lang=es" hreflang="es" lang="es" data-lang="es" aria-label="Español">ES</a>
       <span aria-hidden="true">·</span>
       <a href="./" hreflang="en" lang="en" aria-current="page" data-lang="en" aria-label="English">EN</a>
     </nav>
