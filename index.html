@@ -40,6 +40,18 @@
        data-domains evita contar las pruebas en local. -->
   <script async id="umami-script" src="https://cloud.umami.is/script.js" data-website-id="d85f7cbf-d246-4f98-a8bc-3f9cb7958729" data-domains="saltychina.com"></script>
   <script>
+    // Navegador en un idioma que no es español (cualquier variante: es-ES, es-MX…)
+    // → versión en inglés. Si el usuario elige idioma en el selector, se respeta.
+    (function () {
+      try {
+        var pref = localStorage.getItem('salty:lang');
+        var lang = (navigator.languages && navigator.languages[0]) || navigator.language || '';
+        var bot = /bot|crawl|spider|slurp|facebookexternalhit|preview/i.test(navigator.userAgent);
+        if (!bot && pref !== 'es' && (pref === 'en' || !/^es(-|_|$)/i.test(lang))) {
+          location.replace('en/' + location.search + location.hash);
+        }
+      } catch (e) {}
+    })();
     document.documentElement.classList.add('js');
     // Navegador interno de TikTok: algunos botones sugieren abrir en el navegador.
     // Para probarlo en un ordenador, añade ?tiktok a la URL.
@@ -133,9 +145,9 @@
     </div>
     <!-- ── Selector de idioma ─────────────────────────────── -->
     <nav class="lang" aria-label="Idioma">
-      <a href="./" hreflang="es" lang="es" aria-current="page">Español</a>
+      <a href="./" hreflang="es" lang="es" aria-current="page" data-lang="es">Español</a>
       <span aria-hidden="true">·</span>
-      <a href="en/" hreflang="en" lang="en">English</a>
+      <a href="en/" hreflang="en" lang="en" data-lang="en">English</a>
     </nav>
   </main>
 

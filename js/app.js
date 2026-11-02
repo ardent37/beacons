@@ -501,6 +501,11 @@ function initSuggest() {
   });
 }
 
+// Selector de idioma: recuerda la elección para que no haya redirección automática
+document.querySelectorAll('[data-lang]').forEach((a) => {
+  a.addEventListener('click', () => storage.set('salty:lang', a.dataset.lang));
+});
+
 initSuggest(); // antes que initTracking: su clic se procesa primero
 initTracking();
 initFollowers();
