@@ -347,7 +347,6 @@ a { color: inherit; text-decoration: none; }
   margin-bottom: var(--gap);
   border-radius: var(--radius);
   overflow: hidden;
-  border: 1px solid #fff;
   box-shadow: var(--shadow);
   transition: transform 0.35s var(--ease-out), box-shadow 0.35s var(--ease-out);
 }
