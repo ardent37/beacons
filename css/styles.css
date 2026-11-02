@@ -340,6 +340,24 @@ a { color: inherit; text-decoration: none; }
   transition-duration: 0.12s;
 }
 
+/* ── Recuadro ancho (versión inglesa) ─────────────────── */
+
+.wide {
+  display: block;
+  margin-bottom: var(--gap);
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid #fff;
+  box-shadow: var(--shadow);
+  transition: transform 0.35s var(--ease-out), box-shadow 0.35s var(--ease-out);
+}
+.wide img { width: 100%; height: auto; display: block; }
+@media (hover: hover) {
+  .wide:hover { transform: translateY(-3px); box-shadow: var(--shadow-hover); }
+}
+.wide:active { transform: scale(0.98); transition-duration: 0.12s; }
+.js .wide { animation: rise 0.6s var(--ease-out) 0.12s both; }
+
 /* ── Rejilla de enlaces ───────────────────────────────── */
 
 .grid {
