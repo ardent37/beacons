@@ -7,7 +7,7 @@ const CONFIG = {
   // y la web usará data/followers.json, que GitHub actualiza cada 30 min.
   // Ejemplo: 'https://salty-followers.tu-usuario.workers.dev'
   apiUrl: 'https://salty-followers.ardentcone.workers.dev/',
-  fallbackUrl: 'data/followers.json',
+  fallbackUrl: '/data/followers.json', // absoluta: sirve también desde /en/
   refreshMs: 30_000,
 };
 
@@ -45,7 +45,8 @@ const storage = {
 const CACHE_KEY = 'salty:followers';
 
 function createCounter(el) {
-  const fmt = new Intl.NumberFormat('es-ES'); // 5263 · 10.942 · 125.300
+  const EN = document.documentElement.lang === 'en';
+  const fmt = new Intl.NumberFormat(EN ? 'en-US' : 'es-ES'); // 5263 · 10.942 / 10,942
   const DIGITS = '<span>0</span><span>1</span><span>2</span><span>3</span><span>4</span>'
                + '<span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>0</span>';
   let value = 0;
@@ -88,7 +89,7 @@ function createCounter(el) {
   }
 
   function label(n) {
-    el.setAttribute('aria-label', `${fmt.format(n)} seguidores`);
+    el.setAttribute('aria-label', `${fmt.format(n)} ${EN ? 'followers' : 'seguidores'}`);
   }
 
   function set(n) {

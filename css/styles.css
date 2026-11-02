@@ -584,6 +584,30 @@ html.sheet-open .page {
   html.sheet-open .page { transform: scale(0.97); }
 }
 
+/* ── Selector de idioma (discreto, al final) ──────────── */
+
+.lang {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  margin-top: clamp(24px, 7vw, 36px);
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.lang a {
+  padding: 8px 6px;
+  border-radius: 8px;
+  transition: color 0.2s;
+}
+
+.lang a[aria-current="page"] { color: var(--ink); font-weight: 500; }
+
+@media (hover: hover) {
+  .lang a:hover { color: var(--ink); }
+}
+
 /* ── TikTok: sugerencia de abrir en el navegador ──────── */
 
 .suggest {
@@ -803,10 +827,11 @@ html.sheet-open .page {
     padding: 0 0 48px;
     display: grid;
     grid-template-columns: 1fr auto auto 1fr;
-    grid-template-rows: auto 1fr;
+    grid-template-rows: auto 1fr auto;
     grid-template-areas:
       "bar bar  bar  bar"
-      ".   desk side .";
+      ".   desk side ."
+      ".   lang lang .";
     row-gap: clamp(28px, 4vh, 48px);
   }
 
@@ -951,6 +976,8 @@ html.sheet-open .page {
 
   .promo { margin-bottom: var(--gap); }
   .promo { cursor: pointer; }
+
+  .lang { grid-area: lang; margin-top: 0; }
 
   /* Entrada escalonada adaptada */
   .js .desk { animation: rise 0.7s var(--ease-out) 0.05s both; }
