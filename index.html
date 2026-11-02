@@ -45,9 +45,12 @@
     (function () {
       try {
         var pref = localStorage.getItem('salty:lang');
-        var lang = (navigator.languages && navigator.languages[0]) || navigator.language || '';
+        // Chrome puede tener el inglés primero aunque el usuario hable español:
+        // basta con que el español aparezca en su lista de idiomas
+        var langs = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || ''];
+        var spanish = Array.prototype.some.call(langs, function (l) { return /^es(-|_|$)/i.test(l); });
         var bot = /bot|crawl|spider|slurp|facebookexternalhit|preview/i.test(navigator.userAgent);
-        if (!bot && pref !== 'es' && (pref === 'en' || !/^es(-|_|$)/i.test(lang))) {
+        if (!bot && pref !== 'es' && (pref === 'en' || !spanish)) {
           location.replace('en/' + location.search + location.hash);
         }
       } catch (e) {}
@@ -143,11 +146,11 @@
         </a>
       </section>
     </div>
-    <!-- ── Selector de idioma ─────────────────────────────── -->
+    <!-- ── Selector de idioma (arriba a la derecha) ──────── -->
     <nav class="lang" aria-label="Idioma">
-      <a href="./" hreflang="es" lang="es" aria-current="page" data-lang="es">Español</a>
+      <a href="./" hreflang="es" lang="es" aria-current="page" data-lang="es" aria-label="Español">ES</a>
       <span aria-hidden="true">·</span>
-      <a href="en/" hreflang="en" lang="en" data-lang="en">English</a>
+      <a href="en/" hreflang="en" lang="en" data-lang="en" aria-label="English">EN</a>
     </nav>
   </main>
 
