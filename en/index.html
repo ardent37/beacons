@@ -48,9 +48,9 @@
       }
     } catch (e) {}
     document.documentElement.classList.add('js');
-    // Navegador interno de TikTok: algunos botones sugieren abrir en el navegador.
+    // Navegador interno de TikTok o Instagram: se pide abrir la web en el navegador.
     // Para probarlo en un ordenador, añade ?tiktok a la URL.
-    if (/musical_ly|bytedancewebview|tiktok|trill_/i.test(navigator.userAgent) || /[?&]tiktok/.test(location.search)) {
+    if (/musical_ly|bytedancewebview|tiktok|trill_|instagram/i.test(navigator.userAgent) || /[?&](tiktok|instagram)/.test(location.search)) {
       document.documentElement.classList.add('in-tiktok');
     }
   </script>
@@ -111,6 +111,23 @@
     </section>
 
     <div class="side">
+      <!-- ── Aviso para el navegador interno de TikTok / Instagram ── -->
+      <section class="inapp" aria-labelledby="inapp-title">
+        <svg class="inapp__lock" viewBox="0 0 48 64" aria-hidden="true"><path d="M10 26V17a14 14 0 0 1 28 0v9h-6v-9a8 8 0 0 0-16 0v9z"/><path fill-rule="evenodd" d="M4 26h40a2 2 0 0 1 2 2v32a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V28a2 2 0 0 1 2-2zm20 13a5 5 0 0 0-2.5 9.33V54a2.5 2.5 0 0 0 5 0v-5.67A5 5 0 0 0 24 39z"/></svg>
+        <h2 class="inapp__title" id="inapp-title">Open in your browser</h2>
+        <ol class="inapp__steps">
+          <li><span class="inapp__num" aria-hidden="true">1</span><span>Tap <span class="inapp__dots" role="img" aria-label="the three dots"><i></i><i></i><i></i></span> in the top right corner</span></li>
+          <li><span class="inapp__num" aria-hidden="true">2</span><span>Then <strong>“Open in browser”</strong></span></li>
+        </ol>
+      </section>
+
+      <!-- Flechas animadas que señalan el menú ··· de la app -->
+      <svg class="inapp-arrows" viewBox="0 0 56 160" aria-hidden="true">
+        <path class="inapp-arrows__a1" d="M28 0 56 54Q28 42 0 54Z"/>
+        <path class="inapp-arrows__a2" d="M28 53 56 107Q28 95 0 107Z"/>
+        <path class="inapp-arrows__a3" d="M28 106 56 160Q28 148 0 160Z"/>
+      </svg>
+
       <!-- ── Cupón principal (abre la ventana de registro) ──── -->
       <a class="promo" id="promo"
          href="https://www.usfans.com/register?ref=GRAS35"
@@ -128,10 +145,10 @@
 
       <section class="grid" aria-label="Links">
         <!-- Misma pestaña a propósito: el móvil abre la app de Telegram y la web se queda aquí -->
-        <a class="tile" id="tile-chats" href="../chats/" data-track="telegram" data-suggest>
+        <a class="tile" id="tile-chats" href="../chats/" data-track="telegram">
           <img src="../img/en/telegram.webp" width="640" height="640" alt="Telegram: daily products" loading="lazy" decoding="async">
         </a>
-        <a class="tile" href="https://doppel.fit/@salty/best-shoes-sneakers-budget" target="_blank" rel="noopener" data-track="zapatillas" data-suggest>
+        <a class="tile" href="https://doppel.fit/@salty/best-shoes-sneakers-budget" target="_blank" rel="noopener" data-track="zapatillas">
           <img src="../img/en/zapatillas.webp" width="640" height="640" alt="Sneakers: best seller" loading="lazy" decoding="async">
         </a>
       </section>
@@ -167,30 +184,6 @@
     </div>
   </div>
 
-  <!-- ── TikTok: sugerencia de abrir en el navegador ────── -->
-  <div class="suggest" id="suggest" role="dialog" aria-modal="true" aria-labelledby="suggest-title" aria-hidden="true">
-    <div class="suggest__backdrop" data-suggest-close></div>
-    <div class="suggest__card">
-      <svg class="suggest__globe" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><ellipse cx="12" cy="12" rx="4.6" ry="10"/><path d="M12 2v20M3.4 8.2h17.2M3.4 15.8h17.2"/></svg>
-      <h2 class="suggest__title" id="suggest-title">We recommend <span>opening in your browser</span></h2>
-      <p class="suggest__note">*Some links may not work inside TikTok*</p>
-      <ol class="inapp__steps">
-        <li><span class="inapp__num" aria-hidden="true">1</span><span>Tap <span class="inapp__dots" role="img" aria-label="the three dots"><i></i><i></i><i></i></span> in the top right corner</span></li>
-        <li><span class="inapp__num" aria-hidden="true">2</span><span>Then <strong>“Open in browser”</strong></span></li>
-      </ol>
-      <button class="suggest__continue" type="button" id="suggest-continue">
-        Continue in TikTok
-        <small>(not recommended)</small>
-      </button>
-    </div>
-
-    <!-- Flechas animadas que señalan el menú ··· de TikTok -->
-    <svg class="inapp-arrows" viewBox="0 0 56 160" aria-hidden="true">
-      <path class="inapp-arrows__a1" d="M28 0 56 54Q28 42 0 54Z"/>
-      <path class="inapp-arrows__a2" d="M28 53 56 107Q28 95 0 107Z"/>
-      <path class="inapp-arrows__a3" d="M28 106 56 160Q28 148 0 160Z"/>
-    </svg>
-  </div>
 
   <script src="../chats/links.js" defer></script>
   <script src="../js/app.js" defer></script>

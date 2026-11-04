@@ -437,68 +437,9 @@ function initTracking() {
   });
 
   // Visitas que llegan desde el navegador de TikTok
-  if (root.classList.contains('in-tiktok')) track('visita-tiktok');
-}
-
-/* ──────────────────────────────────────────────────────────────────────────
-   TikTok: sugerencia de abrir en el navegador
-   ────────────────────────────────────────────────────────────────────────── */
-
-// Dentro de TikTok, los botones con data-suggest (Telegram, guía, spreadsheet,
-// zapatillas) muestran siempre una ventana que recomienda abrir la web en el
-// navegador. "Continuar en TikTok" abre el enlace igualmente.
-
-function initSuggest() {
-  const modal = document.getElementById('suggest');
-  const continueBtn = document.getElementById('suggest-continue');
-  if (!modal || !root.classList.contains('in-tiktok')) return;
-
-  let pending = null;
-  let bypass = false;
-  let lastFocus = null;
-
-  function open(link) {
-    pending = link;
-    lastFocus = document.activeElement;
-    root.classList.add('is-locked');
-    modal.classList.add('is-open');
-    modal.removeAttribute('aria-hidden');
-    setTimeout(() => continueBtn.focus({ preventScroll: true }), 300);
-    track('aviso-tiktok', { enlace: link.dataset.track });
+  if (root.classList.contains('in-tiktok')) {
+    track(/instagram/i.test(navigator.userAgent) ? 'visita-instagram' : 'visita-tiktok');
   }
-
-  function close() {
-    modal.classList.remove('is-open');
-    modal.setAttribute('aria-hidden', 'true');
-    root.classList.remove('is-locked');
-    lastFocus?.focus?.({ preventScroll: true });
-  }
-
-  document.addEventListener('click', (e) => {
-    const link = e.target.closest('a[data-suggest]');
-    if (!link || bypass) return;
-    e.preventDefault();
-    open(link);
-  });
-
-  continueBtn.addEventListener('click', () => {
-    const link = pending;
-    close();
-    if (!link) return;
-    track('continuar-tiktok', { enlace: link.dataset.track });
-    // Clic "real" en el enlace: respeta si abre en esta pestaña o en otra
-    bypass = true;
-    link.click();
-    bypass = false;
-  });
-
-  modal.addEventListener('click', (e) => {
-    if (e.target.closest('[data-suggest-close]')) close();
-  });
-
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && modal.classList.contains('is-open')) close();
-  });
 }
 
 // Selector de idioma: recuerda la elección para que no haya redirección automática
@@ -506,7 +447,6 @@ document.querySelectorAll('[data-lang]').forEach((a) => {
   a.addEventListener('click', () => storage.set('salty:lang', a.dataset.lang));
 });
 
-initSuggest(); // antes que initTracking: su clic se procesa primero
 initTracking();
 initFollowers();
 initSheet();
