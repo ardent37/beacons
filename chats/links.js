@@ -2,7 +2,7 @@
    Lo usan la página principal (botón de Telegram) y /chats/ (respaldo). */
 (function () {
   var LINKS = {
-    hispano: 'https://t.me/addlist/Epf3JZL3YQ4yN2Q0', // ES, MX, AR, PE, EC, CO
+    hispano: 'https://t.me/addlist/YAN-SroiRYVlNWVh', // ES, MX, AR, PE, EC, CO
     resto:   'https://t.me/addlist/YAN-SroiRYVlNWVh', // cualquier otro país
   };
   var HISPANO = ['ES', 'MX', 'AR', 'PE', 'EC', 'CO'];
